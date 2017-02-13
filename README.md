@@ -7,7 +7,7 @@
 [![Total Downloads][ico-downloads]][link-downloads]
 
 PHP implementation of the [AVM Home Automation HTTP Interface](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AHA-HTTP-Interface.pdf).
-* Currently only DECT heating controls are supported
+* Currently only Comet DECT/FRITZ!DECT 300 heating controls are supported
 
 ## Install
 
@@ -43,12 +43,17 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) and [CONDUCT](CONDUCT.md) for details
 
 ## Security
 
-If you discover any security related issues, please email mail@jakni.de instead of using the issue tracker.
+If you discover any security related issues, please email github@jakni.de instead of using the issue tracker.
 
 ## Credits
 
 - [Jan Knipper][link-author]
 - [All Contributors][link-contributors]
+
+## Sources
+
+https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AHA-HTTP-Interface.pdf
+https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AVM_Technical_Note_-_Session_ID.pdf
 
 ## License
 
