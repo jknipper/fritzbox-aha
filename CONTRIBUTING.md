@@ -2,7 +2,7 @@
 
 Contributions are **welcome** and will be fully **credited**.
 
-We accept contributions via Pull Requests on [Github](https://github.com/GordonLesti/levenshtein).
+We accept contributions via Pull Requests on [Github](https://github.com/jknipper/fritzbox-aha).
 
 
 ## Pull Requests

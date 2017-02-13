@@ -7,4 +7,4 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ## 1.0.0 - 2017-02-10
 
 ### Added
-- Created class `FritzboxAHA` and test
+- Created class `FritzboxAHA` and tests
