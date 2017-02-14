@@ -3,6 +3,7 @@
     <description>The coding standard for FritzboxAHA.</description>
     <file>src/</file>
     <file>tests/</file>
+    <file>examples/</file>
     <arg name="extensions" value="php"/>
     <rule ref="PSR2"/>
 </ruleset>
