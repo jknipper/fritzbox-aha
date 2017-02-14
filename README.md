@@ -30,7 +30,7 @@ use \JanKnipper\FritzboxAHA\FritzboxAHA;
 $aha = new FritzboxAHA("fritz.box", "user", "password");
 ```
 
-See [example](example/example1.php)
+See [example1](examples/example1.php) [example2](examples/example2.php)
 
 ## Change log
 
