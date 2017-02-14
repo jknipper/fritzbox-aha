@@ -7,7 +7,12 @@
 [![Total Downloads][ico-downloads]][link-downloads]
 
 PHP implementation of the [AVM Home Automation HTTP Interface](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AHA-HTTP-Interface.pdf).
-* Currently only Comet DECT/FRITZ!DECT 300 heating controls are supported
+
+Supported devices:
+
+* Comet DECT/FRITZ!DECT 300 heating controls
+* FRITZ!DECT 200 power switch
+* FRITZ!DECT 210 power switch (not tested)
 
 ## Install
 
