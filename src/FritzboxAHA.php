@@ -161,7 +161,11 @@ class FritzboxAHA
 
             $resp = $this->curl->exec();
 
-            return trim($resp);
+            if (!is_bool($resp)) {
+                $resp = trim($resp);
+            }
+
+            return $resp;
         }
 
         return false;
@@ -291,14 +295,24 @@ class FritzboxAHA
     }
 
     /**
-     * Returns AIN for all known devices
+     * Returns all known devices
      *
-     * @return \SimpleXMLElement[]
+     * @return array
      */
     public function getAllDevices()
     {
         $devices = $this->getDeviceList();
-        return $devices->device;
+        $ret = [];
+
+        foreach ($devices->device as $device) {
+            $ret[] = [
+                "name" => (string)$device->name,
+                "aid"  => (string)$device["identifier"],
+                "type" => (string)$device["functionbitmask"],
+            ];
+        }
+
+        return $ret;
     }
 
     /**

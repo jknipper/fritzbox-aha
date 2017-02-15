@@ -35,6 +35,6 @@
         "test": "php vendor/bin/phpunit",
         "phpcs": "php vendor/bin/phpcs",
         "phpmd": "php vendor/bin/phpmd src/,tests/,examples/ text cleancode,codesize,controversial,design,naming,unusedcode",
-        "phpcpd": "php vendor/bin/phpcpd src/ tests/ examples/"
+        "phpcpd": "php vendor/bin/phpcpd src/"
     }
 }
