@@ -225,6 +225,114 @@ class FritzboxAHATest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(true, $aha->setHeatingOff("xxxxx xxxxxxx"));
     }
 
+    public function testGetTemperatureSoll()
+    {
+        $data = $this->getData();
+
+        $curl = $this->getMockBuilder("PHPCurl\CurlWrapper\Curl")
+            ->setMethods(["exec"])
+            ->getMock();
+
+        $curl->expects($this->at(0))
+            ->method("exec")
+            ->will($this->returnValue($data[0]));
+
+        $curl->expects($this->at(1))
+            ->method("exec")
+            ->will($this->returnValue($data[1]));
+
+        $curl->expects($this->at(2))
+            ->method("exec")
+            ->will($this->returnValue("32"));
+
+        $aha = new FritzboxAHA($curl);
+
+        $aha->login("somehost", "someuser", "somepass");
+
+        $this->assertEquals("16", $aha->getTemperatureSoll("xxxxx xxxxxxx"));
+    }
+
+    public function testGetTemperatureLow()
+    {
+        $data = $this->getData();
+
+        $curl = $this->getMockBuilder("PHPCurl\CurlWrapper\Curl")
+            ->setMethods(["exec"])
+            ->getMock();
+
+        $curl->expects($this->at(0))
+            ->method("exec")
+            ->will($this->returnValue($data[0]));
+
+        $curl->expects($this->at(1))
+            ->method("exec")
+            ->will($this->returnValue($data[1]));
+
+        $curl->expects($this->at(2))
+            ->method("exec")
+            ->will($this->returnValue("253"));
+
+        $aha = new FritzboxAHA($curl);
+
+        $aha->login("somehost", "someuser", "somepass");
+
+        $this->assertEquals("off", $aha->getTemperatureLow("xxxxx xxxxxxx"));
+    }
+
+    public function testGetTemperatureComfort()
+    {
+        $data = $this->getData();
+
+        $curl = $this->getMockBuilder("PHPCurl\CurlWrapper\Curl")
+            ->setMethods(["exec"])
+            ->getMock();
+
+        $curl->expects($this->at(0))
+            ->method("exec")
+            ->will($this->returnValue($data[0]));
+
+        $curl->expects($this->at(1))
+            ->method("exec")
+            ->will($this->returnValue($data[1]));
+
+        $curl->expects($this->at(2))
+            ->method("exec")
+            ->will($this->returnValue("254"));
+
+        $aha = new FritzboxAHA($curl);
+
+        $aha->login("somehost", "someuser", "somepass");
+
+        $this->assertEquals("on", $aha->getTemperatureComfort("xxxxx xxxxxxx"));
+    }
+
+    public function testGetTemperature()
+    {
+        $data = $this->getData();
+
+        $curl = $this->getMockBuilder("PHPCurl\CurlWrapper\Curl")
+            ->setMethods(["exec"])
+            ->getMock();
+
+        $curl->expects($this->at(0))
+            ->method("exec")
+            ->will($this->returnValue($data[0]));
+
+        $curl->expects($this->at(1))
+            ->method("exec")
+            ->will($this->returnValue($data[1]));
+
+        $curl->expects($this->at(2))
+            ->method("exec")
+            ->will($this->returnValue("210"));
+
+        $aha = new FritzboxAHA($curl);
+
+        $aha->login("somehost", "someuser", "somepass");
+
+        $this->assertEquals("21", $aha->getTemperature("xxxxx xxxxxxx"));
+    }
+
     public function getData()
     {
         if (!is_array($this->data)) {
