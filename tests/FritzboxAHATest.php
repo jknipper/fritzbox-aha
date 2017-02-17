@@ -5,6 +5,10 @@ namespace JanKnipper\FritzboxAHATest;
 
 use \JanKnipper\FritzboxAHA\FritzboxAHA;
 
+/**
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
+ * @SuppressWarnings(PHPMD.StaticAccess)
+ */
 class FritzboxAHATest extends \PHPUnit_Framework_TestCase
 {
     protected $data;
