@@ -337,6 +337,297 @@ class FritzboxAHATest extends \PHPUnit_Framework_TestCase
         $this->assertEquals("21", $aha->getTemperature("xxxxx xxxxxxx"));
     }
 
+    public function testGetAllGroups()
+    {
+        $data = $this->getData();
+
+        $curl = $this->getMockBuilder("PHPCurl\CurlWrapper\Curl")
+            ->setMethods(["exec"])
+            ->getMock();
+
+        $curl->expects($this->at(0))
+            ->method("exec")
+            ->will($this->returnValue($data[0]));
+
+        $curl->expects($this->at(1))
+            ->method("exec")
+            ->will($this->returnValue($data[1]));
+
+        $curl->expects($this->at(2))
+            ->method("exec")
+            ->will($this->returnValue($data[2]));
+
+        $aha = new FritzboxAHA($curl);
+
+        $aha->login("somehost", "someuser", "somepass");
+
+        $groups = $aha->getAllGroups();
+        $groups = json_decode(json_encode($groups), true);
+
+        $this->assertEquals($data[4], $groups);
+    }
+
+    public function testGetAllSwitches()
+    {
+        $data = $this->getData();
+
+        $curl = $this->getMockBuilder("PHPCurl\CurlWrapper\Curl")
+            ->setMethods(["exec"])
+            ->getMock();
+
+        $curl->expects($this->at(0))
+            ->method("exec")
+            ->will($this->returnValue($data[0]));
+
+        $curl->expects($this->at(1))
+            ->method("exec")
+            ->will($this->returnValue($data[1]));
+
+        $curl->expects($this->at(2))
+            ->method("exec")
+            ->will($this->returnValue($data[5]));
+
+        $aha = new FritzboxAHA($curl);
+
+        $aha->login("somehost", "someuser", "somepass");
+
+        $switches = $aha->getAllSwitches();
+
+        $this->assertEquals($data[6], $switches);
+    }
+
+    public function testSetSwitchOn()
+    {
+        $data = $this->getData();
+
+        $curl = $this->getMockBuilder("PHPCurl\CurlWrapper\Curl")
+            ->setMethods(["exec"])
+            ->getMock();
+
+        $curl->expects($this->at(0))
+            ->method("exec")
+            ->will($this->returnValue($data[0]));
+
+        $curl->expects($this->at(1))
+            ->method("exec")
+            ->will($this->returnValue($data[1]));
+
+        $curl->expects($this->at(2))
+            ->method("exec")
+            ->will($this->returnValue("1"));
+
+        $aha = new FritzboxAHA($curl);
+
+        $aha->login("somehost", "someuser", "somepass");
+
+        $switch = $aha->setSwitchOn("xxxxx xxxxxxx");
+
+        $this->assertEquals("1", $switch);
+    }
+
+    public function testSetSwitchOff()
+    {
+        $data = $this->getData();
+
+        $curl = $this->getMockBuilder("PHPCurl\CurlWrapper\Curl")
+            ->setMethods(["exec"])
+            ->getMock();
+
+        $curl->expects($this->at(0))
+            ->method("exec")
+            ->will($this->returnValue($data[0]));
+
+        $curl->expects($this->at(1))
+            ->method("exec")
+            ->will($this->returnValue($data[1]));
+
+        $curl->expects($this->at(2))
+            ->method("exec")
+            ->will($this->returnValue("0"));
+
+        $aha = new FritzboxAHA($curl);
+
+        $aha->login("somehost", "someuser", "somepass");
+
+        $switch = $aha->setSwitchOff("xxxxx xxxxxxx");
+
+        $this->assertEquals("0", $switch);
+    }
+
+    public function testSetSwitchToggle()
+    {
+        $data = $this->getData();
+
+        $curl = $this->getMockBuilder("PHPCurl\CurlWrapper\Curl")
+            ->setMethods(["exec"])
+            ->getMock();
+
+        $curl->expects($this->at(0))
+            ->method("exec")
+            ->will($this->returnValue($data[0]));
+
+        $curl->expects($this->at(1))
+            ->method("exec")
+            ->will($this->returnValue($data[1]));
+
+        $curl->expects($this->at(2))
+            ->method("exec")
+            ->will($this->returnValue("1"));
+
+        $aha = new FritzboxAHA($curl);
+
+        $aha->login("somehost", "someuser", "somepass");
+
+        $switch = $aha->setSwitchToggle("xxxxx xxxxxxx");
+
+        $this->assertEquals("1", $switch);
+    }
+
+    public function testGetSwitchState()
+    {
+        $data = $this->getData();
+
+        $curl = $this->getMockBuilder("PHPCurl\CurlWrapper\Curl")
+            ->setMethods(["exec"])
+            ->getMock();
+
+        $curl->expects($this->at(0))
+            ->method("exec")
+            ->will($this->returnValue($data[0]));
+
+        $curl->expects($this->at(1))
+            ->method("exec")
+            ->will($this->returnValue($data[1]));
+
+        $curl->expects($this->at(2))
+            ->method("exec")
+            ->will($this->returnValue("1"));
+
+        $aha = new FritzboxAHA($curl);
+
+        $aha->login("somehost", "someuser", "somepass");
+
+        $switch = $aha->getSwitchState("xxxxx xxxxxxx");
+
+        $this->assertEquals("1", $switch);
+    }
+
+    public function testIsSwitchPresent()
+    {
+        $data = $this->getData();
+
+        $curl = $this->getMockBuilder("PHPCurl\CurlWrapper\Curl")
+            ->setMethods(["exec"])
+            ->getMock();
+
+        $curl->expects($this->at(0))
+            ->method("exec")
+            ->will($this->returnValue($data[0]));
+
+        $curl->expects($this->at(1))
+            ->method("exec")
+            ->will($this->returnValue($data[1]));
+
+        $curl->expects($this->at(2))
+            ->method("exec")
+            ->will($this->returnValue(true));
+
+        $aha = new FritzboxAHA($curl);
+
+        $aha->login("somehost", "someuser", "somepass");
+
+        $switch = $aha->isSwitchPresent("xxxxx xxxxxxx");
+
+        $this->assertEquals(true, $switch);
+    }
+
+    public function testGetSwitchPower()
+    {
+        $data = $this->getData();
+
+        $curl = $this->getMockBuilder("PHPCurl\CurlWrapper\Curl")
+            ->setMethods(["exec"])
+            ->getMock();
+
+        $curl->expects($this->at(0))
+            ->method("exec")
+            ->will($this->returnValue($data[0]));
+
+        $curl->expects($this->at(1))
+            ->method("exec")
+            ->will($this->returnValue($data[1]));
+
+        $curl->expects($this->at(2))
+            ->method("exec")
+            ->will($this->returnValue("150"));
+
+        $aha = new FritzboxAHA($curl);
+
+        $aha->login("somehost", "someuser", "somepass");
+
+        $switch = $aha->getSwitchPower("xxxxx xxxxxxx");
+
+        $this->assertEquals("150", $switch);
+    }
+
+    public function testGetSwitchEnergy()
+    {
+        $data = $this->getData();
+
+        $curl = $this->getMockBuilder("PHPCurl\CurlWrapper\Curl")
+            ->setMethods(["exec"])
+            ->getMock();
+
+        $curl->expects($this->at(0))
+            ->method("exec")
+            ->will($this->returnValue($data[0]));
+
+        $curl->expects($this->at(1))
+            ->method("exec")
+            ->will($this->returnValue($data[1]));
+
+        $curl->expects($this->at(2))
+            ->method("exec")
+            ->will($this->returnValue("1500"));
+
+        $aha = new FritzboxAHA($curl);
+
+        $aha->login("somehost", "someuser", "somepass");
+
+        $switch = $aha->getSwitchEnergy("xxxxx xxxxxxx");
+
+        $this->assertEquals("1500", $switch);
+    }
+
+    public function testGetSwitchName()
+    {
+        $data = $this->getData();
+
+        $curl = $this->getMockBuilder("PHPCurl\CurlWrapper\Curl")
+            ->setMethods(["exec"])
+            ->getMock();
+
+        $curl->expects($this->at(0))
+            ->method("exec")
+            ->will($this->returnValue($data[0]));
+
+        $curl->expects($this->at(1))
+            ->method("exec")
+            ->will($this->returnValue($data[1]));
+
+        $curl->expects($this->at(2))
+            ->method("exec")
+            ->will($this->returnValue("Küche"));
+
+        $aha = new FritzboxAHA($curl);
+
+        $aha->login("somehost", "someuser", "somepass");
+
+        $switch = $aha->getSwitchName("xxxxx xxxxxxx");
+
+        $this->assertEquals("Küche", $switch);
+    }
+
     public function getData()
     {
         if (!is_array($this->data)) {
@@ -355,6 +646,38 @@ class FritzboxAHATest extends \PHPUnit_Framework_TestCase
                     "type" => "320",
                 ]
             ];
+            $data[4] = [
+                '@attributes' => [
+                    'identifier' => 'B5:BF:65-900',
+                    'id' => '900',
+                    'functionbitmask' => '4160',
+                    'fwversion' => '1.0',
+                    'manufacturer' => 'AVM',
+                    'productname' => '',
+                ],
+                'present' => '1',
+                'name' => '3. OG',
+                'hkr' => [
+                    'tist' => '43',
+                    'tsoll' => '32',
+                    'absenk' => '32',
+                    'komfort' => '41',
+                    'lock' => '0',
+                    'devicelock' => '0',
+                    'errorcode' => '0',
+                    'batterylow' => '0',
+                    'nextchange' => [
+                        'endperiod' => '1486792800',
+                        'tchange' => '41',
+                    ],
+                ],
+                'groupinfo' => [
+                    'masterdeviceid' => '0',
+                    'members' => '16,17',
+                ],
+            ];
+            $data[5] = "1,2,3,4,5\n";
+            $data[6] = ["1", "2", "3", "4", "5"];
 
             $this->data = $data;
         }
