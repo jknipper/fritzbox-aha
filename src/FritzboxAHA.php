@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace JanKnipper\FritzboxAHA;
 
 use \PHPCurl\CurlWrapper\CurlInterface;
+use \PHPCurl\CurlWrapper\Curl;
 
 /**
  * Class FritzboxAHA
@@ -28,8 +29,12 @@ class FritzboxAHA
      * @param CurlInterface $curl
      */
     public function __construct(
-        CurlInterface $curl
+        CurlInterface $curl = null
     ) {
+    	if ($curl === null) {
+    		$curl = new Curl;
+	    }
+
         $this->curl = $curl;
     }
 
