@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace JanKnipper\FritzboxAHA;
 
@@ -31,9 +31,9 @@ class FritzboxAHA
     public function __construct(
         CurlInterface $curl = null
     ) {
-    	if ($curl === null) {
-    		$curl = new Curl;
-	    }
+        if ($curl === null) {
+            $curl = new Curl;
+        }
 
         $this->curl = $curl;
     }
@@ -312,7 +312,7 @@ class FritzboxAHA
         foreach ($devices->device as $device) {
             $ret[] = [
                 "name" => (string)$device->name,
-                "aid"  => (string)$device["identifier"],
+                "aid" => (string)$device["identifier"],
                 "type" => (string)$device["functionbitmask"],
             ];
         }
