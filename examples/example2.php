@@ -4,9 +4,8 @@ declare(strict_types = 1);
 require("../vendor/autoload.php");
 
 use \JanKnipper\FritzboxAHA\FritzboxAHA;
-use \PHPCurl\CurlWrapper\Curl;
 
-$aha = new FritzboxAHA(new Curl);
+$aha = new FritzboxAHA();
 
 $aha->login("fritz.box", "", "password");
 
@@ -41,6 +40,6 @@ foreach ($switches as $switch) {
 
 $devs = $aha->getAllDevices();
 foreach ($devs as $dev) {
-    $ain = $dev["identifier"];
+    $ain = $dev["aid"];
     echo "AIN: " . $ain . "\n";
 }

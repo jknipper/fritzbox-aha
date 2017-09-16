@@ -4,9 +4,8 @@ declare(strict_types = 1);
 require("../vendor/autoload.php");
 
 use \JanKnipper\FritzboxAHA\FritzboxAHA;
-use \PHPCurl\CurlWrapper\Curl;
 
-$aha = new FritzboxAHA(new Curl);
+$aha = new FritzboxAHA();
 
 $aha->login("fritz.box", "", "password");
 
@@ -14,7 +13,7 @@ echo "Session id: " . $aha->getSid() . "\n";
 
 $devs = $aha->getAllDevices();
 foreach ($devs as $dev) {
-    $ain = $dev["identifier"];
+    $ain = $dev["aid"];
     echo "Current temperature on device " . $ain . ": " . $aha->getTemperature($ain) . "\n";
     echo "Soll temperature for device " . $ain . ": " . $aha->getTemperatureSoll($ain) . "\n";
     echo "Comfort temperature for device " . $ain . ": " . $aha->getTemperatureComfort($ain) . "\n";
