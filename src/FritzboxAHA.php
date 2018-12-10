@@ -231,7 +231,7 @@ class FritzboxAHA
      */
     public function getTemperatureSoll($ain)
     {
-        return $this->getTemperatureHkr($ain, "gethkrkomfort");
+        return $this->getTemperatureHkr($ain, "gethkrtsoll");
     }
 
     /**
