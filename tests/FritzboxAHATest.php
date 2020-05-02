@@ -9,7 +9,7 @@ use \JanKnipper\FritzboxAHA\FritzboxAHA;
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  * @SuppressWarnings(PHPMD.StaticAccess)
  */
-class FritzboxAHATest extends \PHPUnit_Framework_TestCase
+class FritzboxAHATest extends \PHPUnit\Framework\TestCase
 {
     protected $data;
 
