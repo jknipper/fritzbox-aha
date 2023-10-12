@@ -206,11 +206,11 @@ class FritzboxAHA
     /**
      * @param $ain
      * @param $type
-     * @return float|int|string
+     * @return float|int
      */
     private function getTemperatureHkr($ain, $type)
     {
-        $temp = $this->sendCommand($type, $ain);
+        $temp = (int) $this->sendCommand($type, $ain);
 
         if ($temp == 254) {
             return "on";
