@@ -379,7 +379,7 @@ class FritzboxAHA
      * Get power state of switch
      *
      * @param $ain
-     * @return 0|1|inval
+     * @return 0|1|int
      */
     public function getSwitchState($ain)
     {
@@ -401,7 +401,7 @@ class FritzboxAHA
      * Get current power consumption in mW
      *
      * @param $ain
-     * @return float|inval
+     * @return float|int
      */
     public function getSwitchPower($ain)
     {
@@ -413,7 +413,7 @@ class FritzboxAHA
      * since last reset in Wh
      *
      * @param $ain
-     * @return float|inval
+     * @return float|int
      */
     public function getSwitchEnergy($ain)
     {
