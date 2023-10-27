@@ -200,7 +200,7 @@ class FritzboxAHA
      */
     public function getTemperature($ain)
     {
-        return $this->sendCommand("gettemperature", $ain) / 10;
+        return (int) $this->sendCommand("gettemperature", $ain) / 10;
     }
 
     /**
