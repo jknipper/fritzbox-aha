@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 require("../vendor/autoload.php");
 
-use \JanKnipper\FritzboxAHA\FritzboxAHA;
+use \sgoettsch\FritzboxAHA\FritzboxAHA;
 
 $aha = new FritzboxAHA();
 

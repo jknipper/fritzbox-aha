@@ -1,33 +1,34 @@
 <?php
+
 declare(strict_types=1);
 
-namespace JanKnipper\FritzboxAHA;
+namespace sgoettsch\FritzboxAHA;
 
-use \PHPCurl\CurlWrapper\CurlInterface;
-use \PHPCurl\CurlWrapper\Curl;
+use Exception;
+use PHPCurl\CurlWrapper\CurlInterface;
+use PHPCurl\CurlWrapper\Curl;
+use SimpleXMLElement;
 
 /**
  * Class FritzboxAHA
- * @package JanKnipper\FritzboxAHA
+ * @package sgoettsch\FritzboxAHA
  * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
  */
 class FritzboxAHA
 {
-    private $loginUrl = "http://%s/login_sid.lua";
-    private $ahaUrl = "http://%s/webservices/homeautoswitch.lua?switchcmd=%s&sid=%s";
+    /** @noinspection HttpUrlsUsage */
+    private string $loginUrl = "http://%s/login_sid.lua";
+    /** @noinspection HttpUrlsUsage */
+    private string $ahaUrl = "http://%s/webservices/homeautoswitch.lua?switchcmd=%s&sid=%s";
     //protected $aha_url = "http://%s/webservices/homeautoswitch.lua?switchcmd=%s&sid=%s&ain=%s&param=%s";
-    private $curl;
-    private $host;
-    private $useSsl;
-    private $checkCert;
-    private $user;
-    private $password;
-    private $sid;
+    private Curl|CurlInterface $curl;
+    private string $host;
+    private bool $useSsl;
+    private bool $checkCert;
+    private string $user;
+    private string $password;
+    private string $sid;
 
-    /**
-     * FritzboxAHA constructor.
-     * @param CurlInterface $curl
-     */
     public function __construct(
         CurlInterface $curl = null
     ) {
@@ -39,19 +40,15 @@ class FritzboxAHA
     }
 
     /**
-     * @param $host
-     * @param $user
-     * @param $password
-     * @param bool $useSsl
-     * @param bool $checkCert
+     * @throws Exception
      */
     public function login(
-        $host,
-        $user,
-        $password,
-        $useSsl = false,
-        $checkCert = true
-    ) {
+        string $host,
+        string $user,
+        string $password,
+        bool $useSsl = false,
+        bool $checkCert = true
+    ): void {
         $this->host = $host;
         $this->user = $user;
         $this->password = $password;
@@ -60,13 +57,9 @@ class FritzboxAHA
         $this->sid = $this->getSessionId();
     }
 
-    /**
-     * @param $challenge
-     * @return string
-     */
-    public function getChallengeResponse($challenge)
+    public function getChallengeResponse(string $challenge): string
     {
-        $response = $challenge . "-" .
+        return $challenge . "-" .
             md5(
                 mb_convert_encoding(
                     $challenge . "-" . $this->password,
@@ -74,14 +67,12 @@ class FritzboxAHA
                     "UTF-8"
                 )
             );
-
-        return $response;
     }
 
     /**
-     * @return \SimpleXMLElement[]
+     * @throws Exception
      */
-    private function getSessionId()
+    private function getSessionId(): string
     {
         $url = sprintf($this->loginUrl, $this->host);
 
@@ -98,48 +89,53 @@ class FritzboxAHA
         }
 
         $resp = $this->curl->exec();
+
+        if (is_bool($resp)) {
+            throw new Exception('Failed to get sid');
+        }
+
         $sess = simplexml_load_string($resp);
 
-        if ($sess->SID == "0000000000000000") {
-            $challenge = $sess->Challenge;
+        if (isset($sess->Challenge, $sess->SID) && $sess->SID == "0000000000000000") {
+            $challenge = (string)$sess->Challenge;
             $response = $this->getChallengeResponse($challenge);
-            $this->curl->setOpt(CURLOPT_POSTFIELDS, "username={$this->user}&response={$response}&page=/login_sid.lua");
+            $this->curl->setOpt(CURLOPT_POSTFIELDS, "username=$this->user&response=$response&page=/login_sid.lua");
             $login = $this->curl->exec();
+
+            if (is_bool($login)) {
+                throw new Exception('Could not get sid');
+            }
+
             $sess = simplexml_load_string($login);
         }
 
-        $this->sid = $sess->SID;
+        if (!isset($sess->SID)) {
+            throw new Exception('Could not get sid');
+        }
 
-        return $this->sid;
+        return (string)$sess->SID;
     }
 
     /**
      * Set session id
-     *
-     * @return mixed
      */
-    public function getSid()
+    public function getSid(): string
     {
         return $this->sid;
     }
 
     /**
      * Set session id
-     *
-     * @param $sid
      */
-    public function setSid($sid)
+    public function setSid(string $sid): void
     {
         $this->sid = $sid;
     }
 
     /**
-     * @param $cmd
-     * @param string $ain
-     * @param string $param
-     * @return bool|string
+     * @throws Exception
      */
-    private function sendCommand($cmd, $ain = "", $param = "")
+    private function sendCommand(string $cmd, string $ain = "", string $param = ""): string
     {
         if ($this->sid && $this->sid != "0000000000000000") {
             $url = sprintf($this->ahaUrl, $this->host, $cmd, $this->sid, $ain, $param);
@@ -167,21 +163,18 @@ class FritzboxAHA
             $resp = $this->curl->exec();
 
             if (!is_bool($resp)) {
-                $resp = trim($resp);
+                return trim($resp);
             }
-
-            return $resp;
         }
 
-        return false;
+        throw new Exception($cmd.' failed');
     }
 
     /**
      * Returns information for all known devices
-     *
-     * @return bool|\SimpleXMLElement
+     * @throws Exception
      */
-    public function getDeviceList()
+    public function getDeviceList(): SimpleXMLElement|bool
     {
         $resp = $this->sendCommand("getdevicelistinfos");
 
@@ -194,23 +187,19 @@ class FritzboxAHA
 
     /**
      * Gets current temperature for device or group
-     *
-     * @param $ain
-     * @return float|int
+     * @throws Exception
      */
-    public function getTemperature($ain)
+    public function getTemperature(string $ain): float|int
     {
-        return (int) $this->sendCommand("gettemperature", $ain) / 10;
+        return (int)$this->sendCommand("gettemperature", $ain) / 10;
     }
 
     /**
-     * @param $ain
-     * @param $type
-     * @return float|int
+     * @throws Exception
      */
-    private function getTemperatureHkr($ain, $type)
+    private function getTemperatureHkr(string $ain, string $type): float|int|string
     {
-        $temp = (int) $this->sendCommand($type, $ain);
+        $temp = (int)$this->sendCommand($type, $ain);
 
         if ($temp == 254) {
             return "on";
@@ -225,53 +214,44 @@ class FritzboxAHA
 
     /**
      * Gets aimed temperature for device or group
-     *
-     * @param $ain
-     * @return float|int|string
+     * @throws Exception
      */
-    public function getTemperatureSoll($ain)
+    public function getTemperatureSoll(string $ain): float|int|string
     {
         return $this->getTemperatureHkr($ain, "gethkrtsoll");
     }
 
     /**
      * Gets temperature for comfort-heating interval
-     *
-     * @param $ain
-     * @return float|int|string
+     * @throws Exception
      */
-    public function getTemperatureComfort($ain)
+    public function getTemperatureComfort(string $ain): float|int|string
     {
         return $this->getTemperatureHkr($ain, "gethkrkomfort");
     }
 
     /**
      * Gets temperature for non-heating interval
-     *
-     * @param $ain
-     * @return float|int|string
+     * @throws Exception
      */
-    public function getTemperatureLow($ain)
+    public function getTemperatureLow(string $ain): float|int|string
     {
         return $this->getTemperatureHkr($ain, "gethkrabsenk");
     }
 
     /**
      * Sets temperature for device or group
-     *
-     * @param $ain
-     * @param $temp
-     * @return bool|string
+     * @throws Exception
      */
-    public function setTemperature($ain, $temp)
+    public function setTemperature(string $ain, int $temp): bool|string
     {
         if ($temp >= 8 && $temp <= 28) {
-            $param = floor($temp * 2);
+            $param = (string)floor($temp * 2);
             return $this->sendCommand("sethkrtsoll", $ain, $param);
         }
 
         if ($temp == 253 || $temp == 254) {
-            return $this->sendCommand("sethkrtsoll", $ain, $temp);
+            return $this->sendCommand("sethkrtsoll", $ain, (string)$temp);
         }
 
         return false;
@@ -279,34 +259,34 @@ class FritzboxAHA
 
     /**
      * Turns heating on for device or group
-     *
-     * @param $ain
-     * @return bool|string
+     * @throws Exception
      */
-    public function setHeatingOn($ain)
+    public function setHeatingOn(string $ain): bool|string
     {
         return $this->setTemperature($ain, 254);
     }
 
     /**
      * Turns heating off for device or group
-     *
-     * @param $ain
-     * @return bool|string
+     * @throws Exception
      */
-    public function setHeatingOff($ain)
+    public function setHeatingOff(string $ain): bool|string
     {
         return $this->setTemperature($ain, 253);
     }
 
     /**
      * Returns all known devices
-     *
-     * @return array
+     * @throws Exception
      */
-    public function getAllDevices()
+    public function getAllDevices(): array
     {
         $devices = $this->getDeviceList();
+
+        if (!isset($devices->device)) {
+            throw new Exception('Could not get device list');
+        }
+
         $ret = [];
 
         foreach ($devices->device as $device) {
@@ -322,21 +302,24 @@ class FritzboxAHA
 
     /**
      * Returns all known device groups
-     *
-     * @return \SimpleXMLElement[]
+     * @throws Exception
      */
-    public function getAllGroups()
+    public function getAllGroups(): SimpleXMLElement
     {
         $devices = $this->getDeviceList();
+
+        if (!isset($devices->group)) {
+            throw new Exception('Could not get devices');
+        }
+
         return $devices->group;
     }
 
     /**
      * Returns AIN/MAC of all known switches
-     *
-     * @return array
+     * @throws Exception
      */
-    public function getAllSwitches()
+    public function getAllSwitches(): array
     {
         $switches = $this->sendCommand("getswitchlist");
         return explode(",", $switches);
@@ -344,89 +327,72 @@ class FritzboxAHA
 
     /**
      * Turn switch on
-     *
-     * @param $ain
-     * @return bool|string
+     * @throws Exception
      */
-    public function setSwitchOn($ain)
+    public function setSwitchOn(string $ain): bool|string
     {
         return $this->sendCommand("setswitchon", $ain);
     }
 
     /**
      * Turn switch off
-     *
-     * @param $ain
-     * @return bool|string
+     * @throws Exception
      */
-    public function setSwitchOff($ain)
+    public function setSwitchOff(string $ain): bool|string
     {
         return $this->sendCommand("setswitchoff", $ain);
     }
 
     /**
      * Toggle switch state
-     *
-     * @param $ain
-     * @return bool|string
+     * @throws Exception
      */
-    public function setSwitchToggle($ain)
+    public function setSwitchToggle(string $ain): bool|string
     {
         return $this->sendCommand("setswitchtoggle", $ain);
     }
 
     /**
      * Get power state of switch
-     *
-     * @param $ain
-     * @return 0|1|int
+     * @throws Exception
      */
-    public function getSwitchState($ain)
+    public function getSwitchState(string $ain): bool|string
     {
         return $this->sendCommand("getswitchstate", $ain);
     }
 
     /**
      * Is the switch connected
-     *
-     * @param $ain
-     * @return bool
+     * @throws Exception
      */
-    public function isSwitchPresent($ain)
+    public function isSwitchPresent(string $ain): bool
     {
         return (bool)$this->sendCommand("getswitchpresent", $ain);
     }
 
     /**
      * Get current power consumption in mW
-     *
-     * @param $ain
-     * @return float|int
+     * @throws Exception
      */
-    public function getSwitchPower($ain)
+    public function getSwitchPower(string $ain): bool|string
     {
         return $this->sendCommand("getswitchpower", $ain);
     }
 
     /**
-     * Get total power consumption
-     * since last reset in Wh
-     *
-     * @param $ain
-     * @return float|int
+     * Get total power consumption since last reset in Wh
+     * @throws Exception
      */
-    public function getSwitchEnergy($ain)
+    public function getSwitchEnergy(string $ain): bool|string
     {
         return $this->sendCommand("getswitchenergy", $ain);
     }
 
     /**
      * Get switch name
-     *
-     * @param $ain
-     * @return bool|string
+     * @throws Exception
      */
-    public function getSwitchName($ain)
+    public function getSwitchName(string $ain): bool|string
     {
         return $this->sendCommand("getswitchname", $ain);
     }

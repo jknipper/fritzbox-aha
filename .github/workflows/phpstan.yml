@@ -1,0 +1,21 @@
+name: PHPStan
+
+on:
+  pull_request:
+
+jobs:
+  phpstan:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/sgoettsch/docker-phpstan:latest-php8.1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Composer
+        run: composer install
+
+      - name: PHPStan
+        uses: docker://ghcr.io/sgoettsch/docker-phpstan:latest-php8.1
+        with:
+          args: analyze --error-format=table /github/workspace

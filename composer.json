@@ -10,17 +10,19 @@
     ],
     "autoload": {
         "psr-4": {
-            "JanKnipper\\FritzboxAHA\\": "src"
+            "sgoettsch\\FritzboxAHA\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "JanKnipper\\FritzboxAHATest\\": "tests"
+            "sgoettsch\\FritzboxAHATest\\": "tests"
         }
     },
     "require": {
-        "php": ">=7.0",
-        "phpcurl/curlwrapper": "^2.1"
+        "php": ">=8.1",
+        "phpcurl/curlwrapper": "^2.1",
+        "ext-curl": "*",
+        "ext-simplexml": "*"
     },
     "require-dev": {
         "phpmd/phpmd": "^2.5",

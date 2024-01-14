@@ -1,9 +1,9 @@
 <?php
 declare(strict_types = 1);
 
-namespace JanKnipper\FritzboxAHATest;
+namespace sgoettsch\FritzboxAHATest;
 
-use \JanKnipper\FritzboxAHA\FritzboxAHA;
+use \sgoettsch\FritzboxAHA\FritzboxAHA;
 
 /**
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
@@ -11,9 +11,9 @@ use \JanKnipper\FritzboxAHA\FritzboxAHA;
  */
 class FritzboxAHATest extends \PHPUnit\Framework\TestCase
 {
-    protected $data;
+    protected array $data;
 
-    public function testLogin1()
+    public function testLogin1(): void
     {
         $data = $this->getData();
 

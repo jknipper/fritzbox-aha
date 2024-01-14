@@ -25,7 +25,7 @@ $ composer require jknipper/fritzbox-aha
 ## Usage
 
 ``` php
-use \JanKnipper\FritzboxAHA\FritzboxAHA;
+use \sgoettsch\FritzboxAHA\FritzboxAHA;
 $aha = new FritzboxAHA();
 $aha->login("fritz.box", "user", "password");
 ```
